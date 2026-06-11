@@ -1,0 +1,50 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            arch: arm64
+            build-cmd: npm run build:mac
+            suffix: mac-arm64.dmg
+
+          - os: macos-13
+            arch: x64
+            build-cmd: npm run build:mac
+            suffix: mac-x64.dmg
+
+          - os: windows-latest
+            arch: x64
+            build-cmd: npm run build:win
+            suffix: win-x64.exe
+
+          - os: ubuntu-latest
+            arch: x64
+            build-cmd: npm run build:linux
+            suffix: linux-x64.AppImage
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - run: ${{ matrix.build-cmd }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: douyin-insight-${{ matrix.suffix }}
+          path: release/
