@@ -72,3 +72,18 @@ douyin-insight/
 ## License
 
 MIT
+
+## 跨平台构建说明
+
+Electron 的 native 模块和二进制文件是平台相关的，无法跨平台交叉编译，需要在目标平台上分别构建。
+
+| 目标平台 | 构建机器 | 命令 |
+|---------|---------|------|
+| macOS (Intel) | macOS Intel | `npm run build:mac` |
+| macOS (Apple Silicon / arm64) | macOS ARM64 | `npm run build:mac` |
+| Windows (x64) | Windows x64 | `npm run build:win` |
+| Linux (x64) | Linux x64 | `npm run build:linux` |
+
+> 例如：在 Mac ARM64 机器上执行 `npm run build:win` 会失败，必须在 Windows x64 机器上运行打包命令。
+>
+> 生产环境建议使用 CI 多平台流水线（如 GitHub Actions）进行自动化构建。
