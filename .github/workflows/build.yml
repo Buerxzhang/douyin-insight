@@ -52,13 +52,10 @@ jobs:
 
       - name: Vite build
         run: npx vite build
+        env:
+          NODE_ENV: production
 
       - name: Package
         run: ${{ matrix.build-cmd }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: douyin-insight-${{ matrix.suffix }}
-          path: release/
