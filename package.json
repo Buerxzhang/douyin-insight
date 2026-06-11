@@ -47,7 +47,9 @@
       "target": [
         "AppImage"
       ],
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "category": "Utility",
+      "publish": null
     },
     "nsis": {
       "oneClick": false,
