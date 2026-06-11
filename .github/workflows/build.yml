@@ -19,11 +19,6 @@ jobs:
             build-cmd: npm run build:mac
             suffix: mac-arm64.dmg
 
-          - os: macos-13
-            arch: x64
-            build-cmd: npm run build:mac
-            suffix: mac-x64.dmg
-
           - os: windows-2025
             arch: x64
             build-cmd: npm run build:win
@@ -77,13 +72,6 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
-
-      - name: Generate release notes
-        id: notes
-        run: |
-          echo "files<<EOF" >> $GITHUB_OUTPUT
-          ls -1 artifacts/*/ | sed 's/^artifacts\///' | sed 's:/$::' >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
 
       - uses: softprops/action-gh-release@v2
         with:
