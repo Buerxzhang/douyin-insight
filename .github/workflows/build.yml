@@ -73,22 +73,19 @@ jobs:
         with:
           path: artifacts
 
-      - name: Flatten artifacts
-        run: |
-          mkdir -p upload
-          find artifacts -type f -exec cp {} upload/ \;
-          ls -lh upload/
-
-      - name: Create or Update Release
-        run: |
-          if gh release view "${{ github.ref_name }}" --repo "${{ github.repository }}" &>/dev/null; then
-            echo "Release already exists, uploading assets..."
-            gh release upload "${{ github.ref_name }}" upload/* \
-              --repo "${{ github.repository }}" --clobber
-          else
-            echo "Creating new release..."
-            gh release create "${{ github.ref_name }}" upload/* \
-              --repo "${{ github.repository }}" --generate-notes
-          fi
+      - name: Flatten and upload
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
+
+          # 先把 Release 建好（如果不存在）
+          gh release view "$TAG" --repo "$REPO" &>/dev/null || \
+            gh release create "$TAG" --repo "$REPO" --generate-notes
+
+          # 逐个上传文件，只传文件名本身，不传路径
+          find artifacts -type f | while read -r f; do
+            echo "Uploading: $(basename "$f")"
+            gh release upload "$TAG" "$f" --repo "$REPO" --clobber
+          done
