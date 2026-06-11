@@ -1,0 +1,38 @@
+# 依赖
+node_modules/
+
+# 构建产物
+dist/
+release/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 日志
+*.log
+npm-debug.log*
+
+# Electron 用户数据目录（本地运行时生成）
+# 账号数据（包含 cookies 等敏感信息）
+data/
+userData/
+
+# 抖音数据文件（运行后生成，含 cookies 和隐私数据）
+accounts.json
+cookies_*.json
+stats_history.csv
+comments.json
+settings.json
