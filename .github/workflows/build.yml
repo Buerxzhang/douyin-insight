@@ -21,12 +21,12 @@ jobs:
             build-cmd: npm run build:mac
             suffix: mac-x64.dmg
 
-          - os: windows-latest
+          - os: windows-2025
             arch: x64
             build-cmd: npm run build:win
             suffix: win-x64.exe
 
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             arch: x64
             build-cmd: npm run build:linux
             suffix: linux-x64.AppImage
@@ -38,11 +38,25 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
-      - run: npm install
+      - name: Install system dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libx11-xcb-dev libxcb-dri3-dev libxcb-util-dev \
+            libxcb-cursor-dev libxcb-keysyms1-dev libxcb-xkb-dev \
+            libxkbfile-dev libxkbcommon-dev libxkbcommon-x11-dev
 
-      - run: ${{ matrix.build-cmd }}
+      - run: npm ci
+
+      - name: Vite build
+        run: npx vite build
+
+      - name: Package
+        run: ${{ matrix.build-cmd }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:
