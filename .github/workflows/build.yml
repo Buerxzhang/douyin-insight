@@ -73,15 +73,21 @@ jobs:
         with:
           path: artifacts
 
+      - name: Flatten artifacts
+        run: |
+          mkdir -p upload
+          find artifacts -type f -exec cp {} upload/ \;
+          ls -lh upload/
+
       - name: Create or Update Release
         run: |
           if gh release view "${{ github.ref_name }}" --repo "${{ github.repository }}" &>/dev/null; then
             echo "Release already exists, uploading assets..."
-            gh release upload "${{ github.ref_name }}" artifacts/**/* \
+            gh release upload "${{ github.ref_name }}" upload/* \
               --repo "${{ github.repository }}" --clobber
           else
             echo "Creating new release..."
-            gh release create "${{ github.ref_name }}" artifacts/**/* \
+            gh release create "${{ github.ref_name }}" upload/* \
               --repo "${{ github.repository }}" --generate-notes
           fi
         env:
