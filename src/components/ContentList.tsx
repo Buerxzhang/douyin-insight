@@ -85,10 +85,10 @@ function ContentList({ accountId, refreshing }: ContentListProps) {
   const filteredList = () => {
     let list = [...allContentList]
 
-    // 类型过滤暂不支持（VideoItem 没有 aweme_type）
-    // if (filters.type !== 'all') {
-    //   list = list.filter(item => item.aweme_type === filters.type)
-    // }
+    // 类型过滤：视频 / 图文（无 content_type 的旧数据按视频处理）
+    if (filters.type !== 'all') {
+      list = list.filter(item => (item.content_type || 'video') === filters.type)
+    }
 
     if (filters.time !== 'all') {
       const now = new Date()

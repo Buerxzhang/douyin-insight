@@ -19,6 +19,7 @@ export interface VideoItem {
   collect_count: number
   create_time: string
   keywords: string[]
+  content_type?: 'video' | 'image'
 }
 
 export interface AccountStats {

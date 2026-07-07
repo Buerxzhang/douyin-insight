@@ -111,7 +111,8 @@ function ExportData({ accountId }: ExportDataProps) {
       }
 
       if (result && result.success && result.filePath) {
-        MessagePlugin.success('导出成功！文件已保存到: ' + result.filePath)
+        const fileName = result.filePath.split('/').pop() || result.filePath
+        MessagePlugin.success('导出成功！文件已保存到: ' + fileName)
       } else if (result && result.error) {
         throw new Error(result.error)
       } else {

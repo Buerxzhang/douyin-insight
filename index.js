@@ -687,7 +687,7 @@ ipcMain.handle('exportToExcel', async (event, accountIds, startDate, endDate, me
     filters: [{ name: 'Excel', extensions: ['xlsx'] }]
   })
   
-  if (filePath) { XLSX.writeFile(wb, filePath); return { success: true, path: filePath } }
+  if (filePath) { XLSX.writeFile(wb, filePath); return { success: true, filePath: filePath } }
   return { success: false, error: '取消' }
 })
 
@@ -770,7 +770,7 @@ ipcMain.handle('exportContentToExcel', async (event, contentList, exportName) =>
   
   if (filePath) { 
     XLSX.writeFile(wb, filePath)
-    return { success: true, path: filePath } 
+    return { success: true, filePath: filePath }
   }
   
   return { success: false, error: '取消' }
@@ -833,7 +833,7 @@ ipcMain.handle('exportContentToCSV', async (event, contentList, exportName) => {
     ).join('\n')
     
     fs.writeFileSync(filePath, csvContent, 'utf-8')
-    return { success: true, path: filePath } 
+    return { success: true, filePath: filePath }
   }
   
   return { success: false, error: '取消' }
@@ -873,7 +873,7 @@ ipcMain.handle('exportContentToJSON', async (event, contentList, exportName) => 
   
   if (filePath) { 
     fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2), 'utf-8')
-    return { success: true, path: filePath } 
+    return { success: true, filePath: filePath }
   }
   
   return { success: false, error: '取消' }
@@ -978,7 +978,11 @@ ipcMain.handle('getAwemeList', async (_, accountId) => {
           if (!title) {
             title = `视频 ${item.aweme_id.slice(0, 8)}`
           }
-          
+
+          // 判断内容类型：图文（aweme_type 为 68 或存在 images 数组）或视频
+          const isImage = item.aweme_type === 68 || (Array.isArray(item.images) && item.images.length > 0)
+          const contentType = isImage ? 'image' : 'video'
+
           return {
             aweme_id: item.aweme_id,
             desc: desc,
@@ -989,7 +993,8 @@ ipcMain.handle('getAwemeList', async (_, accountId) => {
             share_count: stats.share_count || 0,
             collect_count: stats.collect_count || 0,
             create_time: item.create_time ? new Date(item.create_time * 1000).toISOString() : null,
-            keywords: keywords
+            keywords: keywords,
+            content_type: contentType
           }
         })
         allAwemes.push(...mapped)

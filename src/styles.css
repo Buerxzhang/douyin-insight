@@ -1768,8 +1768,10 @@ html {
   top: 20px !important;
   position: fixed !important;
   width: auto !important;
-  max-width: 400px !important;
+  max-width: 520px !important;
   white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 /* 成功 - 绿色 */
