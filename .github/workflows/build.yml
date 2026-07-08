@@ -84,8 +84,8 @@ jobs:
           gh release view "$TAG" --repo "$REPO" &>/dev/null || \
             gh release create "$TAG" --repo "$REPO" --generate-notes
 
-          # 逐个上传文件，只传文件名本身，不传路径
-          find artifacts -type f | while read -r f; do
+          # 只传安装包，不上传 Electron 内部文件（*.pak / app.asar / chrome-sandbox 等）
+          find artifacts -type f \( -name '*.dmg' -o -name '*.exe' -o -name '*.AppImage' \) | while read -r f; do
             echo "Uploading: $(basename "$f")"
             gh release upload "$TAG" "$f" --repo "$REPO" --clobber
           done
