@@ -39,12 +39,14 @@ jobs:
         with:
           node-version: 24
 
-      # 把 package.json 的版本号对齐到 git tag（如 v1.0.2 → "1.0.2"）
+      # 把 package.json 的版本号对齐到 git tag（如 v1.0.3 → "1.0.3"）
+      # 用 node 内联脚本代替 npm version，避免 Windows 兼容问题
       - name: Sync version from tag
+        shell: bash
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
           echo "Setting version to $TAG_VERSION"
-          npm version "$TAG_VERSION" --no-git-tag-version
+          node -e "const p=require('./package.json');p.version='${TAG_VERSION}';require('fs').writeFileSync('package.json',JSON.stringify(p,null,2)+'\n')"
 
       - name: Install system dependencies (Linux)
         if: runner.os == 'Linux'
