@@ -93,13 +93,13 @@ jobs:
           gh release view "$TAG" --repo "$REPO" &>/dev/null || \
             gh release create "$TAG" --repo "$REPO" --generate-notes
 
-          # 只上传最终安装包，不上传辅助工具和内部文件
+          # 只上传最终安装包（命名统一为 douyin-insight-x.y.z-platform.arch.ext）
           #   Mac: .dmg
-          #   Windows: Setup*.exe（NSIS 安装器本体，排除 elevate/notifu 等）
+          #   Windows: douyin-insight-*.exe（排除 elevate/notifu/snoretoast 等辅助工具）
           #   Linux: .AppImage
           find artifacts -type f \( \
             -name '*.dmg' -o \
-            -name 'Setup*.exe' -o \
+            \( -name 'douyin-insight-*.exe' ! -name '*elevate*' ! -name '*notifu*' ! -name '*snoretoast*' \) -o \
             -name '*.AppImage' \
           \) | while read -r f; do
             echo "Uploading: $(basename "$f")"
