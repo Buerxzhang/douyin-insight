@@ -56,6 +56,7 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
     },
+    "artifactName": "douyin-insight-${version}-${os}-${arch}.${ext}",
     "publish": null
   },
   "dependencies": {
